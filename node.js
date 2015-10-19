@@ -64,6 +64,18 @@ expressionNode.prototype.getValue = function (scope) {
         return left + right;
     } else if (this.operator === '-') {
         return left - right;
+    } else if (this.operator === '==') {
+        return left === right;
+    } else if (this.operator === '!=') {
+        return left !== right;
+    } else if (this.operator === '>') {
+        return left > right;
+    } else if (this.operator === '<') {
+        return left < right;
+    } else if (this.operator === '>=') {
+        return left >= right;
+    } else if (this.operator === '<=') {
+        return left <= right;
     }
 };
 

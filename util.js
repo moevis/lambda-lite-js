@@ -6,7 +6,7 @@ var keywords = ['if', 'then', 'else', 'let'
 ];
 
 var punctuatorStart = '+-*/!=|&^~%';
-var singlePunctuator = '[]{}\'"(),:\\;';
+var singlePunctuator = '[]{}(),:\\;';
 
 Util.isDigit = function (ch) {
     return '0' <= ch && '9' >= ch;

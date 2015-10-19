@@ -344,7 +344,7 @@ var NODE  = require('./node').NODE;
     function genCallNode () {
         var obj = genExpressionNode();
         while (true) {
-            if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Identifier) {
+            if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Identifier || currToken.type === TOKEN.Literal) {
                 obj = new Node.callNode(obj, genExpressionNode());
             } else if (currToken.type === TOKEN.Punctuator && currToken.value === '(') {
                 obj = new Node.callNode(obj, genParenNode());
@@ -457,6 +457,8 @@ var NODE  = require('./node').NODE;
             } else if (currToken.type === TOKEN.Punctuator) {
                 if (currToken.value === '(') {
                     return genParenNode();
+                } else if (currToken.value === '"' || currToken.value === '\'') {
+                    return genLiteralNode();
                 }
             } else {
                 return null;
