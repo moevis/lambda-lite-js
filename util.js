@@ -2,8 +2,7 @@ var Util = {};
 
 var hexDigit = '0123456789abcdefABCDEF';
 
-var keywords = ['if', 'then', 'else', 'let'
-];
+var keywords = ['if', 'then', 'else', 'let'];
 
 var punctuatorStart = '+-*/!=|&^~%';
 var singlePunctuator = '[]{}(),:\\;';

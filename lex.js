@@ -300,7 +300,15 @@ var NODE  = require('./node').NODE;
         return lookahead.value === value;
     }
 
-    function expectKeyword(value) {
+    function consumeKeyword (value) {
+        if (currToken.value === value && currToken.type === TOKEN.Keyword) {
+            nextToken();
+        } else {
+            throw "expect for: " + value;
+        }
+    }
+
+    function expectKeyword (value) {
         if (lookahead.value === value && lookahead.type === TOKEN.Keyword) {
             nextToken();
             nextToken();
@@ -413,6 +421,17 @@ var NODE  = require('./node').NODE;
         return node;
     }
 
+    function genIfConditionNode () {
+        nextToken();
+        var cond = genTopLevelNode();
+        consumeKeyword('then');
+        var expre1 = genTopLevelNode();
+        consumeKeyword('else');
+        var expre2 = genTopLevelNode();
+        var node = new Node.ifConditionNode(cond, expre1, expre2);
+        return node;
+    }
+
     function genDefineNode () {
         nextToken();
         var id = currToken.value;
@@ -460,6 +479,8 @@ var NODE  = require('./node').NODE;
                 } else if (currToken.value === '"' || currToken.value === '\'') {
                     return genLiteralNode();
                 }
+            } else if (currToken.type === TOKEN.Keyword && currToken.value === 'if') {
+                return genIfConditionNode();
             } else {
                 return null;
             }

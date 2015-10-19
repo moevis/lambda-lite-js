@@ -125,6 +125,20 @@ defineNode.prototype.getValue = function (scope) {
     }
 };
 
+function ifConditionNode (cond, expre1, expre2) {
+    this.cond = cond;
+    this.expre1 = expre1;
+    this.expre2 = expre2;
+}
+
+ifConditionNode.prototype.getValue = function (scope) {
+    if (this.cond.getValue(scope) === false) {
+        return this.expre2.getValue(scope);
+    } else {
+        return this.expre1.getValue(scope);
+    }
+};
+
 function consNode (expre1, expre2) {
 
 }
@@ -132,13 +146,13 @@ function consNode (expre1, expre2) {
 exports.NODE           = NODE;
 exports.Node           = {};
 
-exports.Node.callNode       = callNode;
-exports.Node.objectNode     = objectNode;
-exports.Node.numberNode     = numberNode;
-exports.Node.booleanNode    = booleanNode;
-exports.Node.literalNode    = literalNode;
-exports.Node.defineNode     = defineNode;
-exports.Node.lambdaNode     = lambdaNode;
-exports.Node.expressionNode = expressionNode;
-exports.Node.nativeFunction = nativeFunction;
-
+exports.Node.callNode        = callNode;
+exports.Node.objectNode      = objectNode;
+exports.Node.numberNode      = numberNode;
+exports.Node.booleanNode     = booleanNode;
+exports.Node.literalNode     = literalNode;
+exports.Node.defineNode      = defineNode;
+exports.Node.lambdaNode      = lambdaNode;
+exports.Node.expressionNode  = expressionNode;
+exports.Node.nativeFunction  = nativeFunction;
+exports.Node.ifConditionNode = ifConditionNode;

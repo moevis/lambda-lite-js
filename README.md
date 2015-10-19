@@ -33,6 +33,15 @@ let x = 5;
 let y = \n -> n + 1;
 ```
 
+### binary condition
+
+The binary condition is in form of `if ... then ... else ...`.
+
+```haskell
+print (if true then 1 else 0)
+--- output: 1
+```
+
 ### native function
 
 now some native functions are accessiable. As well as the basic calculation operators: `+-*/`.
