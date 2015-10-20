@@ -118,7 +118,7 @@ footer {
     border: 1px solid #2b81af;
 }
 
-@media screen and (max-width: 980px) {
+@media screen and (max-width: 480px) {
     #wrap {
         width: 100%;
     }
