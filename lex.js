@@ -354,11 +354,20 @@ var NODE  = require('./node').NODE;
         while (true) {
             if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Identifier || currToken.type === TOKEN.Literal) {
                 obj = new Node.callNode(obj, genExpressionNode());
-            } else if (currToken.type === TOKEN.Punctuator && currToken.value === '(') {
-                obj = new Node.callNode(obj, genParenNode());
-            } else if (currToken.type === TOKEN.Punctuator && currToken.value === '$') {
-                nextToken();
-                obj = new Node.callNode(obj, genCallNode());
+            } else if (currToken.type === TOKEN.Punctuator) {
+                if (currToken.value === '(') {
+                    obj = new Node.callNode(obj, genParenNode());
+                } else if (currToken.value === '$') {
+                    nextToken();
+                    obj = new Node.callNode(obj, genCallNode());
+                } else if (currToken.value === '.') {
+                    nextToken();
+                    var f = obj;
+                    var g = genCallNode();
+                    obj = new Node.lambdaNode('$1', new Node.callNode(f, new Node.callNode(g, new Node.objectNode('$1'))));
+                } else {
+                    return obj;
+                }
             } else {
                 return obj;
             }
