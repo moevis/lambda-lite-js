@@ -6,6 +6,7 @@
 pre {
     border: 1px solid #eee;
     text-indent: 0;
+    width: 100%;
 }
 body {
     background: #FAFAFA;
@@ -35,24 +36,24 @@ body, html {
 #head h1{
     color: #777777;
     font-family: "Open Sans",sans-serif;
-    font-size: 28px;
+    font-size: 2.5em;
     font-weight: lighter;
 }
 #head h2{
     color: #528CE0;
     font-family: "Open Sans",sans-serif;
     font-weight: lighter;
-    font-size: 18px;
+    font-size: 1.2em;
     margin-top: 10px;
 }
 
 #description .detail{
     line-height: 150%;
     padding: 0 10px;
-    color: #999;
+    color: #888;
     font-family: "Open Sans",sans-serif;
 /*    text-indent: 2em;*/
-    font-size: 14px;
+    font-size: 1em;
 }
 
 #description .code-display {
@@ -75,7 +76,7 @@ body, html {
     margin: 10px -10px;
     padding: 10px 10px;
     font-weight: normal;
-    font-size: 15px;
+    font-size: 1.2em;
     text-indent: 1em;
     color: #aaa;
     font-family: "Open Sans",sans-serif;
@@ -96,7 +97,7 @@ body, html {
     color: #2b81af;
     font-weight: lighter;
     font-family: "Open Sans",sans-serif;
-    font-size: 18px;
+    font-size: 1.3em;
     margin-left: 10px;
     margin-top: 10px;
 }
