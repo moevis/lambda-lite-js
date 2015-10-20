@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Lambda-lite-js | 微型函数式语言 by icymorn</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-dark.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Lambda-lite-js | 微型函数式语言</h1>
+        <p>a tiny FUNCITONAL LANGUAGE implemented by javascript. 一个函数式语言，使用 js 实现。</p>
+        <p class="view"><a href="https://github.com/icymorn/lambda-lite-js">View the Project on GitHub <small>icymorn/lambda-lite-js</small></a></p>
+        <ul>
+          <li><a href="https://github.com/icymorn/lambda-lite-js/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/icymorn/lambda-lite-js/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/icymorn/lambda-lite-js">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="lambda-lite-js" class="anchor" href="#lambda-lite-js" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lambda-Lite-js</h1>
+
+<p>a tiny FUNCITONAL LANGUAGE implemented by javascript.</p>
+
+<h2>
+<a id="support" class="anchor" href="#support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h2>
+
+<ul>
+<li>lambda function</li>
+<li>various declaration</li>
+<li>function calling</li>
+</ul>
+
+<h2>
+<a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tutorial</h2>
+
+<h3>
+<a id="lambda-function" class="anchor" href="#lambda-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>lambda function</h3>
+
+<p>Using back splash and arrow to declear an anyoumous function. Lambda function only accept one parameter, but you can use some magic method to break this limit.</p>
+
+<div class="highlight highlight-source-haskell"><pre>\n -&gt; n + <span class="pl-c1">1</span>;
+\n -&gt; n * n;
+\n -&gt; n + n * n;</pre></div>
+
+<p>Creating function which accepts two parameters.</p>
+
+<div class="highlight highlight-source-haskell"><pre>(\n -&gt; \m -&gt; m + n) <span class="pl-c1">1</span> <span class="pl-c1">2</span> <span class="pl-c">--- output: 3</span></pre></div>
+
+<h3>
+<a id="various-declaration" class="anchor" href="#various-declaration" aria-hidden="true"><span class="octicon octicon-link"></span></a>various declaration</h3>
+
+<p>The keyword <code>let</code> leads an assignment.</p>
+
+<div class="highlight highlight-source-haskell"><pre><span class="pl-k">let</span> x = <span class="pl-c1">5</span>;
+<span class="pl-k">let</span> y = \n -&gt; n + <span class="pl-c1">1</span>;</pre></div>
+
+<h3>
+<a id="binary-condition" class="anchor" href="#binary-condition" aria-hidden="true"><span class="octicon octicon-link"></span></a>binary condition</h3>
+
+<p>The binary condition is in form of <code>if ... then ... else ...</code>.</p>
+
+<div class="highlight highlight-source-haskell"><pre><span class="pl-c1">print</span> (<span class="pl-k">if</span> true <span class="pl-k">then</span> <span class="pl-c1">1</span> <span class="pl-k">else</span> <span class="pl-c1">0</span>)
+<span class="pl-c">--- output: 1</span></pre></div>
+
+<h3>
+<a id="native-function" class="anchor" href="#native-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>native function</h3>
+
+<p>now some native functions are accessiable. As well as the basic calculation operators: <code>+-*/</code>.</p>
+
+<div class="highlight highlight-source-haskell"><pre><span class="pl-c1">print</span> <span class="pl-s"><span class="pl-pds">"</span>hello<span class="pl-pds">"</span></span>;</pre></div>
+      </section>
+    </div>
+    <footer>
+      <p>Project maintained by <a href="https://github.com/icymorn">icymorn</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
