@@ -25,7 +25,9 @@ function callNode (callee, arg) {
 
 callNode.prototype.getValue = function (scope) {
     var expre = this.callee.getValue(scope);
-    return expre(this.arg);
+    var arg = this.arg.getValue(scope);
+    
+    return expre(packNode(arg));
 };
 
 function objectNode (id) {
@@ -138,6 +140,18 @@ ifConditionNode.prototype.getValue = function (scope) {
         return this.expre1.getValue(scope);
     }
 };
+
+function packNode (value) {
+    if (value.constructor === Number) {
+        return new numberNode(value);
+    } else if (value.constructor === String) {
+        return new literalNode(value);
+    } else if (value.constructor === Boolean) {
+        return new booleanNode(value);
+    } else {
+        return new numberNode(value);
+    }
+}
 
 function consNode (expre1, expre2) {
 
