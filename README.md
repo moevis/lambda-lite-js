@@ -11,7 +11,7 @@ a tiny FUNCITONAL LANGUAGE implemented by javascript.
 
 ### lambda function
 
-Using back splash and arrow to declear an anyoumous function. Lambda function only accept one parameter, but you can use some magic method to break this limit.
+Using backsplash and arrow to declear an anyoumous function. Lambda function only accept one parameter, but you can use some magic method to break this limit.
 
 ```haskell
 \n -> n + 1;
@@ -48,4 +48,17 @@ now some native functions are accessiable. As well as the basic calculation oper
 
 ```haskell
 print "hello";
+```
+
+### recursive calling
+
+Recursive programming is an elegant programming style.
+
+```haskell
+
+let fact = \n ->
+    if n == 1 then 1
+    else n * (fact n - 1);
+print (fact 5);
+--- output: 120 ---
 ```
