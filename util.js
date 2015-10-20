@@ -5,7 +5,7 @@ var hexDigit = '0123456789abcdefABCDEF';
 var keywords = ['if', 'then', 'else', 'let'];
 
 var punctuatorStart = '+-*/!=|&^~%';
-var singlePunctuator = '[]{}(),:\\;';
+var singlePunctuator = '[]{}(),:\\;$.';
 
 Util.isDigit = function (ch) {
     return '0' <= ch && '9' >= ch;
@@ -52,7 +52,7 @@ Util.isPunctuatorStart = function (ch) {
 };
 
 Util.isIdentifierStart = function (ch) {
-    return this.isAlpha(ch) || '$' === ch || '_' === ch;
+    return this.isAlpha(ch) || '_' === ch;
 };
 
 Util.isIdentifierBody = function (ch) {

@@ -356,6 +356,9 @@ var NODE  = require('./node').NODE;
                 obj = new Node.callNode(obj, genExpressionNode());
             } else if (currToken.type === TOKEN.Punctuator && currToken.value === '(') {
                 obj = new Node.callNode(obj, genParenNode());
+            } else if (currToken.type === TOKEN.Punctuator && currToken.value === '$') {
+                nextToken();
+                obj = new Node.callNode(obj, genCallNode());
             } else {
                 return obj;
             }

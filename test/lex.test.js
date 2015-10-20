@@ -14,7 +14,7 @@ lex.parse(
     "let fact = \\n ->" +
     "if n == 1 then 1 " +
     "else n * (fact n - 1);" +
-    "print (fact 5);"
+    "print $ fact 5;"
     //"print (x 5);"
 );
 //lex.parse('let x = \\n->n+1 print 4');

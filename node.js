@@ -26,7 +26,7 @@ function callNode (callee, arg) {
 callNode.prototype.getValue = function (scope) {
     var expre = this.callee.getValue(scope);
     var arg = this.arg.getValue(scope);
-    
+
     return expre(packNode(arg));
 };
 
@@ -35,7 +35,11 @@ function objectNode (id) {
 }
 
 objectNode.prototype.getValue = function (scope) {
-    return scope.lookup(this.id).getValue(scope);
+    var various = scope.lookup(this.id);
+    if (various === undefined) {
+        throw "Cannot to find: " + this.id;
+    }
+    return various.getValue(scope);
 };
 
 function numberNode (value) {
