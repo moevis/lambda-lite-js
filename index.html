@@ -1,91 +1,86 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+<head lang="en">
+    <meta charset="UTF-8">
     <title>Lambda-lite-js | 微型函数式语言 by icymorn</title>
-
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-dark.css">
-    <script src="javascripts/scale.fix.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
+    <link rel="stylesheet" href="stylesheets/tomorrow.css">
+    <script src="javascripts/highlight.pack.js"></script>
+</head>
+<body>
+<div id="wrap">
+    <div id="head">
         <h1>Lambda-lite-js | 微型函数式语言</h1>
-        <p>a tiny FUNCITONAL LANGUAGE implemented by javascript. 一个函数式语言，使用 js 实现。</p>
-        <p class="view"><a href="https://github.com/icymorn/lambda-lite-js">View the Project on GitHub <small>icymorn/lambda-lite-js</small></a></p>
-        <ul>
-          <li><a href="https://github.com/icymorn/lambda-lite-js/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/icymorn/lambda-lite-js/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/icymorn/lambda-lite-js">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h1>
-<a id="lambda-lite-js" class="anchor" href="#lambda-lite-js" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lambda-Lite-js</h1>
-
-<p>a tiny FUNCITONAL LANGUAGE implemented by javascript.</p>
-
-<h2>
-<a id="support" class="anchor" href="#support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h2>
-
-<ul>
-<li>lambda function</li>
-<li>various declaration</li>
-<li>function calling</li>
-</ul>
-
-<h2>
-<a id="tutorial" class="anchor" href="#tutorial" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tutorial</h2>
-
-<h3>
-<a id="lambda-function" class="anchor" href="#lambda-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>lambda function</h3>
-
-<p>Using back splash and arrow to declear an anyoumous function. Lambda function only accept one parameter, but you can use some magic method to break this limit.</p>
-
-<div class="highlight highlight-source-haskell"><pre>\n -&gt; n + <span class="pl-c1">1</span>;
-\n -&gt; n * n;
-\n -&gt; n + n * n;</pre></div>
-
-<p>Creating function which accepts two parameters.</p>
-
-<div class="highlight highlight-source-haskell"><pre>(\n -&gt; \m -&gt; m + n) <span class="pl-c1">1</span> <span class="pl-c1">2</span> <span class="pl-c">--- output: 3</span></pre></div>
-
-<h3>
-<a id="various-declaration" class="anchor" href="#various-declaration" aria-hidden="true"><span class="octicon octicon-link"></span></a>various declaration</h3>
-
-<p>The keyword <code>let</code> leads an assignment.</p>
-
-<div class="highlight highlight-source-haskell"><pre><span class="pl-k">let</span> x = <span class="pl-c1">5</span>;
-<span class="pl-k">let</span> y = \n -&gt; n + <span class="pl-c1">1</span>;</pre></div>
-
-<h3>
-<a id="binary-condition" class="anchor" href="#binary-condition" aria-hidden="true"><span class="octicon octicon-link"></span></a>binary condition</h3>
-
-<p>The binary condition is in form of <code>if ... then ... else ...</code>.</p>
-
-<div class="highlight highlight-source-haskell"><pre><span class="pl-c1">print</span> (<span class="pl-k">if</span> true <span class="pl-k">then</span> <span class="pl-c1">1</span> <span class="pl-k">else</span> <span class="pl-c1">0</span>)
-<span class="pl-c">--- output: 1</span></pre></div>
-
-<h3>
-<a id="native-function" class="anchor" href="#native-function" aria-hidden="true"><span class="octicon octicon-link"></span></a>native function</h3>
-
-<p>now some native functions are accessiable. As well as the basic calculation operators: <code>+-*/</code>.</p>
-
-<div class="highlight highlight-source-haskell"><pre><span class="pl-c1">print</span> <span class="pl-s"><span class="pl-pds">"</span>hello<span class="pl-pds">"</span></span>;</pre></div>
-      </section>
+        <h2>a tiny FUNCITONAL LANGUAGE. </h2>
     </div>
-    <footer>
-      <p>Project maintained by <a href="https://github.com/icymorn">icymorn</a></p>
-      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-    </footer>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-    
-  </body>
+    <div id="description">
+        <h3>Introduction | 介绍</h3>
+
+        <div class="detail">
+            <p>ll.js 是一个由 javascript 实现的函数式语言，任何开启 javascript 支持的浏览器都可以运行它。函数式编程可以用另一种优雅的方式，（通常）用更少的代码获得同样的结果，由于函数式的直观和简短，通常我们的代码出错的概率会更少。目前 ll 语言其支持以下特性：</p>
+            <p><ul>
+                <li>lambda 函数定义</li>
+                <li>Point-free 风格编程</li>
+                <li>数字，字符串，布尔型计算，以及 +-*/ 中缀操作符的支持</li>
+                <li>if ... else ... 判断分支</li>
+            </ul></p>
+<pre><code class="haskell">--- 示例：阶乘 ---
+let fact = \n ->
+    if n == 1 then 1 else n * (fact n - 1);
+print (fact 5);
+</code></pre>
+        </div><a class="btn" href="https://github.com/icymorn/lambda-lite-js/zipball/master">.ZIP file</a><a class="btn" href="https://github.com/icymorn/lambda-lite-js/tarball/master">.TAR file</a><a class="btn" href="https://github.com/icymorn/lambda-lite-js">Github</a>
+    <h3>Usage | 使用方法</h3>
+
+        <div class="detail">
+            <b>Lambda function | 匿名函数</b>
+            <p>lambda 函数是只带有一个参数的匿名函数，它们的组合和排列能演绎出复杂的效果。声明函数通过反斜杠引出，具体见下：</p>
+<pre><code class="haskell">--- 函数声明 ---
+\n -> n + 1;
+\n -> n * n;
+\n -> n + n * n;
+</code></pre>
+            <p>通过函数之间的组合，可以巧妙实现多参数的函数。</p>
+<pre><code class="haskell">--- 两参数函数 ---
+(\n -> \m -> m + n) 1 2 --- output: 3
+</code></pre>
+            <br />
+            <b>Various declaration | 变量声明</b>
+            <p>使用 let 关键字声明变量：</p>
+<pre><code class="haskell">--- 变量声明 ---
+let x = 5;
+let y = \n -> n + 1;
+let z = true;
+let p = "hello world";
+</code></pre>
+            
+            <br />
+            <b>Native function | 原生函数</b>
+            <p>目前内置了一些原始操作符和原生函数，唯有的几个中缀函数让编写表达式计算更加方便：</p>
+<pre><code class="haskell">--- 原生函数 ---
+print "hello world";
+print 1 > 2;
+print 3 == 3;
+print 4 + 6 * 5;
+</code></pre>
+            
+            <br />
+            <b>Point-Free Style</b>
+            <p>通过 $ 和 . 的运用，可以写出优美直观，符合 Point-Free Style 的程序。</p>
+            
+<pre><code class="haskell">--- 计算 (10 + 10) ^ 2 ---
+let double = \n -> n + n;
+let square = \n -> n * n;
+print $ double $ square 10; --- output: 200 ---
+let func = double . square;
+print $ func 10;            --- output: 200 ---
+</code></pre>
+            
+        </div>
+        <br />
+        <footer>
+          Project maintained by <a href="https://github.com/icymorn">icymorn</a>
+        </footer>
+</body>
+<script>hljs.initHighlightingOnLoad();</script>
 </html>
