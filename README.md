@@ -3,8 +3,7 @@ a tiny FUNCITONAL LANGUAGE implemented by javascript.
 
 ## Support
 
-* lambda function
-* various declaration
+* lambda function (sugar for multi-parameters)
 * point-free style: compose function together with `.`
 * basic type system: bool, number, function and string.
 
@@ -25,6 +24,15 @@ Creating function which accepts two parameters.
 ```haskell
 (\n -> \m -> m + n) 1 2 --- output: 3
 ```
+
+Now, declear a function with single-param or multi-params can be write as below:
+
+```haskell
+let add x y = x + y
+let result = add 1 2
+--- result = 3 ---
+```
+
 ### Various declaration
 
 The keyword `let` leads an assignment.
