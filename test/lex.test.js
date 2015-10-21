@@ -1,6 +1,6 @@
-var lex = require('../lex.js');
-var Scope = require('../scope.js').Scope;
-var scope = require('../scope.js').Root;
+var lex = require('../lib/lex.js');
+var Scope = require('../lib/scope.js').Scope;
+var scope = require('../lib/scope.js').Root;
 var log = console.log;
 
 //lex.parse('print 4+5');
@@ -15,8 +15,8 @@ lex.parse(
     // "let square = \\r -> r * r;" +
     // "let func = double . square;" +
     // "print $ func 10;"
-    "let add = \\x -> x;" +
-    "print (add 1);"
+    "let ok = 9;" +
+    "print ok;"
     //"print (x 5);"
 );
 //lex.parse('let x = \\n->n+1 print 4');

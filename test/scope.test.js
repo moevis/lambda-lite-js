@@ -1,4 +1,4 @@
-var Scope = require('./../scope').Scope;
+var Scope = require('./../lib/scope').Scope;
 
 var Root = new Scope(null);
 Root.add('a', 1000);

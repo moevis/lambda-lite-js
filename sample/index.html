@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>lambda-lite-js | Tutorial</title>
+    <link rel="stylesheet" href="console.css">
+    <script src="../dist/ll.js"></script>
+</head>
+<body>
+    <textarea id="source">let ok = 9;
+print ok;</textarea>
+    <button id="run">Run</button>
+    <div id="console">
+    </div>
+    <script>
+        var source = document.querySelector('#source');
+        var run = document.querySelector('#run');
+        var output = document.querySelector("#console");
+        var Node = ll.require('./node').Node;
+        var print = new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
+            var e = document.createElement('div');
+            e.innerHTML = '> ' + scope.lookup('$1').getValue(scope);
+            output.appendChild(e);
+        }));
+
+        run.addEventListener('click', function() {
+            var parser = ll.require('./lex').parse;
+            var genTree = ll.require('./lex').genTree;
+            var root = ll.require('./scope').Root;
+            var Scope = ll.require('./scope').Scope;
+            var scope = new Scope(root);
+            scope.add('print', print);
+            parser(source.value);
+            var statements = genTree();
+            statements.forEach(function(e) {
+                e.getValue(scope);
+            });
+        });
+    </script>
+</body>
+</html>

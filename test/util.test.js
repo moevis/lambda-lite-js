@@ -1,4 +1,4 @@
-util = require('../util.js').Util;
+util = require('../lib/util.js').Util;
 
 log = console.log;
 
