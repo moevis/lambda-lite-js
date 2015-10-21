@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/tomorrow.css">
+    <link rel="stylesheet" href="stylesheets/console.css">
     <script src="javascripts/highlight.pack.js"></script>
     <script src="javascripts/scale.fix.js"></script>
-    
+    <script src="http://raw.githubusercontent.com/icymorn/lambda-lite-js/master/dist/ll.min.js"></script>
 </head>
 <body>
 <div id="wrap">
@@ -27,11 +28,18 @@
                 <li>数字，字符串，布尔型计算，以及 +-*/ 中缀操作符的支持</li>
                 <li>if ... else ... 判断分支</li>
             </ul></p>
-<pre><code class="haskell">--- 示例：阶乘 ---
-let fact = \n ->
+<!--<pre><code class="haskell">-&#45;&#45; 示例：阶乘 -&#45;&#45;-->
+<!--let fact = \n ->-->
+    <!--if n == 1 then 1 else n * (fact n - 1);-->
+<!--print (fact 5);-->
+<!--</code></pre>-->
+
+<textarea id="source">let fact = \n ->
     if n == 1 then 1 else n * (fact n - 1);
-print (fact 5);
-</code></pre>
+print (fact 5);</textarea>
+<button id="run">Run</button>
+<div id="console">
+</div>
         </div><a class="btn" href="https://github.com/icymorn/lambda-lite-js/zipball/master">.ZIP file</a><a class="btn" href="https://github.com/icymorn/lambda-lite-js/tarball/master">.TAR file</a><a class="btn" href="https://github.com/icymorn/lambda-lite-js">Github</a>
     <h3>Usage | 使用方法</h3>
 
@@ -86,4 +94,28 @@ print $ func 10;            --- output: 200 ---
         </footer>
 </body>
 <script>hljs.initHighlightingOnLoad();</script>
+<script>
+    var source = document.querySelector('#source');
+    var run = document.querySelector('#run');
+    var output = document.querySelector("#console");
+    var Node = ll.require('./node').Node;
+    var print = new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
+        var e = document.createElement('div');
+        e.innerHTML = '> ' + scope.lookup('$1').getValue(scope);
+        output.appendChild(e);
+    }));
+    run.addEventListener('click', function() {
+        var parser = ll.require('./lex').parse;
+        var genTree = ll.require('./lex').genTree;
+        var root = ll.require('./scope').Root;
+        var Scope = ll.require('./scope').Scope;
+        var scope = new Scope(root);
+        scope.add('print', print);
+        parser(source.value);
+        var statements = genTree();
+        statements.forEach(function(e) {
+            e.getValue(scope);
+        });
+    });
+</script>
 </html>
