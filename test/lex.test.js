@@ -11,9 +11,12 @@ var log = console.log;
 lex.parse(
     //"let x = \\n-> if n == 1 then 1 else n * (x n - 1);" +
     //";" +
-    "let succ = \\n -> n + 1;" +
-    "let square = \\r -> r * r;" +
-    "print $ (succ . square) 8;"
+    // "let double = \\r -> r + r;" +
+    // "let square = \\r -> r * r;" +
+    // "let func = double . square;" +
+    // "print $ func 10;"
+    "let add = \\x -> x;" +
+    "print (add 1);"
     //"print (x 5);"
 );
 //lex.parse('let x = \\n->n+1 print 4');
@@ -21,7 +24,8 @@ lex.parse(
 var z = lex.genTree();
 z[0].getValue(scope);
 z[1].getValue(scope);
-z[2].getValue(scope);
+// z[2].getValue(scope);
+// z[3].getValue(scope);
 //z[2].getValue(scope);
 //log(scope);
 //log(z[1].getValue(scope));

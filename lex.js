@@ -300,6 +300,14 @@ var NODE  = require('./node').NODE;
         return lookahead.value === value;
     }
 
+    function consumePunctuator (value) {
+        if (currToken.value === value && currToken.type === TOKEN.Punctuator) {
+            nextToken();
+        } else {
+            throw "expect for: " + value;
+        }
+    }
+
     function consumeKeyword (value) {
         if (currToken.value === value && currToken.type === TOKEN.Keyword) {
             nextToken();
@@ -448,8 +456,29 @@ var NODE  = require('./node').NODE;
         nextToken();
         var id = currToken.value;
         var node;
-        expectPunctuator('=');
-        var value = genTopLevelNode();
+        var expre;
+        if (match('=')) {
+            expectPunctuator('=');
+            expre = genTopLevelNode();
+        } else {
+            nextToken();
+            var params = [];
+            while (true) {
+                expre = genIdentifierNode();
+                params.push(expre);
+                if (match('=')) {
+                    expre = genIdentifierNode();
+                    params.push(expre);
+                    break;
+                }
+            }
+            consumePunctuator('=');
+            expre = genTopLevelNode();
+            while (params.length > 0) {
+                expre = new Node.lambdaNode(params.pop().id, expre);
+            }
+        }
+        var value = expre;
         if (match('->')) {
             nextToken();
             var body = genTopLevelNode();
