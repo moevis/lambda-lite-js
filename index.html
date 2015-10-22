@@ -64,7 +64,11 @@ let y = \n -> n + 1;
 let z = true;
 let p = "hello world";
 </code></pre>
-            
+            <p>通过语法糖，声明一个多参数的函数更加简单快捷了。</p>
+<pre><code class="haskell">---多参数函数 ---
+let add x y = x + y
+let result = add 1 2
+</code></pre>
             <br />
             <b>Native function | 原生函数</b>
             <p>目前内置了一些原始操作符和原生函数，唯有的几个中缀函数让编写表达式计算更加方便：</p>
