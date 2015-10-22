@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-21
+/*! PROJECT_NAME - v0.1.0 - 2015-10-22
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -404,8 +404,8 @@ define('./lex', ['./util', './token', './node'], function (exports) {
             } else if (Util.isLiteralStart(ch)) {
                 token = new Token(TOKEN.Literal, scanLiteral());
             }
-
             if (token.type !== TOKEN.EOF && token.type !== TOKEN.White) {
+
                 lookahead = token;
                 return token;
             }
@@ -476,6 +476,7 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         if (left === null) {
             return null;
         } else {
+
             return genTree(0, left);
         }
     }
@@ -506,11 +507,17 @@ define('./lex', ['./util', './token', './node'], function (exports) {
     }
 
     function genTree (exprece, left) {
+        // patch for calling function
+        if (currToken.type === TOKEN.Punctuator & currToken.value === ';') {
+            return left;
+        }
+
         while (true) {
             var prece = getPrecedence(currToken.value);
             if (prece < exprece) {
                 return left;
             } else {
+
                 var currOp = currToken.value;
                 nextToken();
                 var right = genPrimaryNode();
@@ -586,15 +593,14 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         } else {
             nextToken();
             var params = [];
-            while (true) {
+            while (! match('=')) {
                 expre = genIdentifierNode();
                 params.push(expre);
-                if (match('=')) {
-                    expre = genIdentifierNode();
-                    params.push(expre);
-                    break;
-                }
             }
+            // at least read one params
+            expre = genIdentifierNode();
+            params.push(expre);
+
             consumePunctuator('=');
             expre = genTopLevelNode();
             while (params.length > 0) {
@@ -673,6 +679,9 @@ define('./lex', ['./util', './token', './node'], function (exports) {
 
         while (currToken.type !== TOKEN.EOF && tick++ < max_tick) {
             var node = genTopLevelNode();
+            while (currToken.type === TOKEN.Punctuator && currToken.value === ';' ) {
+                nextToken();
+            }
             if (node) {
                 ast.push(node);
             } else {
@@ -724,7 +733,6 @@ define('./node', [],function (exports) {
     callNode.prototype.getValue = function (scope) {
         var expre = this.callee.getValue(scope);
         var arg = this.arg.getValue(scope);
-
         return expre(packNode(arg));
     };
 
@@ -916,8 +924,13 @@ define('./scope', ['./node'], function (exports) {
     };
 
     var root = new Scope();
+
     root.add('print', new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
         console.log(scope.lookup('$1').getValue(scope));
+    })));
+
+    root.add('length', new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
+        return scope.lookup('$1').getValue(scope).length;
     })));
 
 
