@@ -15,8 +15,9 @@ lex.parse(
     // "let square = \\r -> r * r;" +
     // "let func = double . square;" +
     // "print $ func 10;"
-    "let add n m = n + m;" +
-    "print $ add 5 5;"
+    "let add n m = n + n;" +
+    "print 5;" +
+    "print 4;"
     //"print (x 5);"
 );
 //lex.parse('let x = \\n->n+1 print 4');
@@ -24,7 +25,7 @@ lex.parse(
 var z = lex.genTree();
 z[0].getValue(scope);
 z[1].getValue(scope);
-// z[2].getValue(scope);
+z[2].getValue(scope);
 // z[3].getValue(scope);
 //z[2].getValue(scope);
 //log(scope);
