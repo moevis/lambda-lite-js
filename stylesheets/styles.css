@@ -63,6 +63,13 @@ body, html {
     font-family: monospace;
 }
 
+pre {
+    border: 1px solid #eee;
+    box-shadow: 0 0 5px #aaa;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
 #description li {
     margin-left: 40px;
     text-indent: 0;
@@ -92,7 +99,6 @@ body, html {
     display: inline-block;
     padding: 5px 10px;
     border: 1px solid #bbb;
-    border-right: none;
     text-indent: 0;
     text-decoration: none;
     color: #2b81af;
