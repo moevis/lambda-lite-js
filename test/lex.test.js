@@ -15,8 +15,8 @@ lex.parse(
     // "let square = \\r -> r * r;" +
     // "let func = double . square;" +
     // "print $ func 10;"
-    "let or left right = left || right;" +
-    "print $ or true false;" +
+    "let x = [1,2,3];" +
+    "print x;" +
     "print 1114;"
     //"print (x 5);"
 );
