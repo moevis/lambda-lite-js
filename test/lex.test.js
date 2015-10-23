@@ -15,9 +15,9 @@ lex.parse(
     // "let square = \\r -> r * r;" +
     // "let func = double . square;" +
     // "print $ func 10;"
-    "let add n m = n + n;" +
-    "print 5;" +
-    "print 4;"
+    "let fact n = print n, if n == 1 then 1 else n * (fact n - 1);" +
+    "print $ fact 4;" +
+    "print 1114;"
     //"print (x 5);"
 );
 //lex.parse('let x = \\n->n+1 print 4');
