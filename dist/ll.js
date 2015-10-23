@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-23
+/*! PROJECT_NAME - v0.1.0 - 2015-10-24
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -368,6 +368,20 @@ define('./lex', ['./util', './token', './node'], function (exports) {
                     }
                 }
             }
+        } else if (fstCh === '&') {
+            if (index < length) {
+                ch = source.charAt(index);
+                if (ch === '&') {
+                    index ++;
+                }
+            }
+        } else if (fstCh === '|') {
+            if (index < length) {
+                ch = source.charAt(index);
+                if (ch === '|') {
+                    index ++;
+                }
+            }
         }
         return source.slice(start, index);
     }
@@ -484,7 +498,7 @@ define('./lex', ['./util', './token', './node'], function (exports) {
     function genCallNode () {
         var obj = genExpressionNode();
         while (true) {
-            if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Identifier || currToken.type === TOKEN.Literal) {
+            if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Identifier || currToken.type === TOKEN.Literal || currToken.type === TOKEN.BooleanLiteral) {
                 obj = new Node.callNode(obj, genExpressionNode());
             } else if (currToken.type === TOKEN.Punctuator) {
                 if (currToken.value === '(') {
@@ -792,6 +806,10 @@ define('./node', [],function (exports) {
             return left >= right;
         } else if (this.operator === '<=') {
             return left <= right;
+        } else if (this.operator === '||') {
+            return left || right;
+        } else if (this.operator === '&&') {
+            return left && right;
         }
     };
 
