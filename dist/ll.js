@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-22
+/*! PROJECT_NAME - v0.1.0 - 2015-10-23
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -497,6 +497,9 @@ define('./lex', ['./util', './token', './node'], function (exports) {
                     var f = obj;
                     var g = genCallNode();
                     obj = new Node.lambdaNode('$1', new Node.callNode(f, new Node.callNode(g, new Node.objectNode('$1'))));
+                } else if (currToken.value === ',') {
+                    nextToken();
+                    obj = new Node.consNode(obj, genExpressionNode());
                 } else {
                     return obj;
                 }
@@ -618,6 +621,7 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         }
         return node;
     }
+
 
     function genTopLevelNode () {
         if (currToken.type === TOKEN.Punctuator && currToken.value === '\\') {
@@ -864,8 +868,18 @@ define('./node', [],function (exports) {
     }
 
     function consNode (expre1, expre2) {
-
+        this.expre1 = expre1;
+        this.expre2 = expre2;
     }
+
+    consNode.prototype.getValue = function (scope) {
+        if (this.expre2 === null) {
+            return this.expre1.getValue(scope);
+        } else {
+            this.expre1.getValue(scope);
+            return this.expre2.getValue(scope);
+        }
+    };
 
     exports.NODE           = NODE;
     exports.Node           = {};
@@ -880,6 +894,7 @@ define('./node', [],function (exports) {
     exports.Node.expressionNode  = expressionNode;
     exports.Node.nativeFunction  = nativeFunction;
     exports.Node.ifConditionNode = ifConditionNode;
+    exports.Node.consNode        = consNode;
 
 });
 
@@ -931,6 +946,10 @@ define('./scope', ['./node'], function (exports) {
 
     root.add('length', new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
         return scope.lookup('$1').getValue(scope).length;
+    })));
+
+    root.add('reverse', new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
+        return scope.lookup('$1').getValue(scope).concat().reverse();
     })));
 
 
