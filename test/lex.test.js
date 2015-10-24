@@ -15,9 +15,12 @@ lex.parse(
     // "let square = \\r -> r * r;" +
     // "let func = double . square;" +
     // "print $ func 10;"
-    "let x = [1,2,3];" +
-    "let y = [3,2,1];" +
-    "print $ not true;"
+    "let y = \\f -> (\\x -> f (x x)) (\\x -> f (x x));" +
+    "let makeFact = \\getFact -> \\n -> if n < 2" +
+    "then 1" +
+    "else n * (getFact n - 1);" +
+    "let fact = y makeFact;" +
+    "print $ fact 5;"
     //"print (x 5);"
 );
 //lex.parse('let x = \\n->n+1 print 4');
@@ -26,6 +29,7 @@ var z = lex.genTree();
 z[0].getValue(scope);
 z[1].getValue(scope);
 z[2].getValue(scope);
+z[3].getValue(scope);
 // z[3].getValue(scope);
 //z[2].getValue(scope);
 //log(scope);

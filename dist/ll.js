@@ -477,7 +477,8 @@ define('./lex', ['./util', './token', './node'], function (exports) {
 
     function genParenNode () {
         nextToken();
-        var v = genCallNode();
+        var v = genTopLevelNode();
+        //var v = genCallNode();
         if (v === null) {
             return null;
         } else {
@@ -773,9 +774,14 @@ define('./node', [],function (exports) {
     }
 
     callNode.prototype.getValue = function (scope) {
-        var expre = this.callee.getValue(scope);
+        //var arg = scope.lookup(this.arg);
+        //if (this.arg.constructor === lambdaNode) {
+        //    return expre(this.arg);
+        //} else {
         var arg = this.arg.getValue(scope);
+        var expre = this.callee.getValue(scope);
         return expre(packNode(arg));
+        //}
     };
 
     function objectNode (id) {
@@ -1050,7 +1056,7 @@ define('./util', [], function (exports) {
 
     var keywords = ['if', 'then', 'else', 'let'];
 
-    var punctuatorStart = '+-*/!=|&^~%';
+    var punctuatorStart = '+-*/!=|&^~%<>';
     var singlePunctuator = '[]{}(),:\\;$.';
 
     Util.isDigit = function (ch) {
