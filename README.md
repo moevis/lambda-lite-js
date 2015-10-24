@@ -4,8 +4,9 @@ a tiny FUNCITONAL LANGUAGE implemented by javascript.
 ## Support
 
 * lambda function (sugar for multi-parameters)
+* currying
 * point-free style: compose function together with `.`
-* basic type system: bool, number, function and string.
+* basic type system: bool, number, list, function and string.
 
 ## Tutorial
 
@@ -30,7 +31,6 @@ Now, declear a function with single-param or multi-params can be write as below:
 ```haskell
 let add x y = x + y
 let result = add 1 2
---- result = 3 ---
 ```
 
 ### Various declaration
@@ -48,7 +48,6 @@ The binary condition is in form of `if ... then ... else ...`.
 
 ```haskell
 print (if true then 1 else 0)
---- output: 1
 ```
 
 ### Native function
@@ -57,6 +56,9 @@ now some native functions are accessiable. As well as the basic calculation oper
 
 ```haskell
 print "hello";
+print (length [1,2,3,4]);
+print (reverse [1,2,3,4]);
+print (not true);
 ```
 
 ### Recursive calling
@@ -69,7 +71,6 @@ let fact = \n ->
     if n == 1 then 1
     else n * (fact n - 1);
 print (fact 5);
---- output: 120 ---
 ```
 
 ### Point-free programming
@@ -81,7 +82,7 @@ Beblow is a sample for calculating (10 + 10) ^ 2
 ```haskell
 let double = \n -> n + n;
 let square = \n -> n * n;
-print $ double $ square 10; --- output: 200 ---
+print $ double $ square 10;
 let func = double . square;
-print $ func 10;            --- output: 200 ---
+print $ func 10;
 ```
