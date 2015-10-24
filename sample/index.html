@@ -7,11 +7,11 @@
     <script src="../dist/ll.js"></script>
 </head>
 <body>
-    <textarea id="source">let y = \f -> (\x -> f (x x)) (\x -> f (x x));
-let makeFact = \getFact -> \n -> if n < 2
+    <textarea id="source">let z = \f->(\x -> f (\y -> x x y)) (\x -> f (\y -> x x y));
+let makeFact = \g -> \n -> if n < 2
     then 1
-    else n * (getFact n - 1);
-let fact = y makeFact;
+    else n * (g n - 1);
+let fact = z makeFact;
 print $ fact 5;</textarea>
     <button id="run">Run</button>
     <div id="console">
