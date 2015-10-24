@@ -137,8 +137,9 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         NullLiteral: 7,
         BooleanLiteral: 8,
         CommentLiteral: 9,
-        White: 10,
-        Unknown: 11
+        List: 10,
+        White: 11,
+        Unknown: 12
     };
 
     var binaryPrecedence = {
@@ -161,7 +162,8 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         '-'          : 90,
         '*'          : 110,
         '/'          : 110,
-        '%'          : 110
+        '%'          : 110,
+        '++'         : 110
     };
 
     var source;
@@ -254,6 +256,8 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         }
         return source.slice(start, index);
     }
+
+
 
     function scanNumberic () {
         var start = index++;
@@ -495,6 +499,23 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         }
     }
 
+    function genList() {
+        //consumePunctuator('[');
+        var elements = [];
+        while (currToken.type !== TOKEN.EOF) {
+            if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Literal || currToken.type === TOKEN.BooleanLiteral) {
+                elements.push(currToken.value);
+            }
+            if (match(']')) {
+                expectPunctuator(']');
+                break;
+            } else {
+                expectPunctuator(',');
+            }
+        }
+        return new Node.listNode(elements);
+    }
+
     function genCallNode () {
         var obj = genExpressionNode();
         while (true) {
@@ -514,6 +535,9 @@ define('./lex', ['./util', './token', './node'], function (exports) {
                 } else if (currToken.value === ',') {
                     nextToken();
                     obj = new Node.consNode(obj, genExpressionNode());
+                } else if (currToken.value === '[') {
+                    nextToken();
+                    obj = genList();
                 } else {
                     return obj;
                 }
@@ -810,6 +834,9 @@ define('./node', [],function (exports) {
             return left || right;
         } else if (this.operator === '&&') {
             return left && right;
+        } else if (this.operator === '++') {
+            var newInstance = left.concat(right);
+            return newInstance;
         }
     };
 
@@ -899,6 +926,14 @@ define('./node', [],function (exports) {
         }
     };
 
+    function listNode (elements) {
+        this.ele = elements;
+    }
+
+    listNode.prototype.getValue = function (scope) {
+        return this.ele;
+    };
+
     exports.NODE           = NODE;
     exports.Node           = {};
 
@@ -913,6 +948,7 @@ define('./node', [],function (exports) {
     exports.Node.nativeFunction  = nativeFunction;
     exports.Node.ifConditionNode = ifConditionNode;
     exports.Node.consNode        = consNode;
+    exports.Node.listNode        = listNode;
 
 });
 
@@ -968,6 +1004,10 @@ define('./scope', ['./node'], function (exports) {
 
     root.add('reverse', new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
         return scope.lookup('$1').getValue(scope).concat().reverse();
+    })));
+
+    root.add('not', new Node.lambdaNode('$1', new Node.nativeFunction(function(scope) {
+        return ! scope.lookup('$1').getValue(scope);
     })));
 
 
