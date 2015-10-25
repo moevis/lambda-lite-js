@@ -4,7 +4,7 @@ a tiny FUNCITONAL LANGUAGE implemented by javascript.
 ## Support
 
 * lambda function (sugar for multi-parameters)
-* currying
+* currying, lazy evaluation, recursive in anonymous function (z combinator)
 * point-free style: compose function together with `.`
 * basic type system: bool, number, list, function and string.
 
@@ -70,6 +70,17 @@ Recursive programming is an elegant programming style.
 let fact = \n ->
     if n == 1 then 1
     else n * (fact n - 1);
+print (fact 5);
+```
+
+Lambda function can recursive by using z-combinator instead of calling itself.
+
+```haskell
+let z = \f->(\x -> f (\y -> x x y)) (\x -> f (\y -> x x y));
+let makeFact = \g -> \n -> if n < 2
+    then 1
+    else n * (g n - 1);
+let fact = z makeFact;
 print (fact 5);
 ```
 

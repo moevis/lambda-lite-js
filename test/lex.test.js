@@ -15,11 +15,11 @@ lex.parse(
     // "let square = \\r -> r * r;" +
     // "let func = double . square;" +
     // "print $ func 10;"
-    "let y = \\f -> (\\x -> f (x x)) (\\x -> f (x x));" +
+    "let z = \\f->(\\x -> f (\\y -> x x y)) (\\x -> f (\\y -> x x y));" +
     "let makeFact = \\getFact -> \\n -> if n < 2" +
     "then 1" +
     "else n * (getFact n - 1);" +
-    "let fact = y makeFact;" +
+    "let fact = z makeFact;" +
     "print $ fact 5;"
     //"print (x 5);"
 );
