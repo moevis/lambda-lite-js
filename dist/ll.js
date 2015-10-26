@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-24
+/*! PROJECT_NAME - v0.1.0 - 2015-10-26
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -163,7 +163,8 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         '*'          : 110,
         '/'          : 110,
         '%'          : 110,
-        '++'         : 110
+        '++'         : 110,
+        ':'          : 110
     };
 
     var source;
@@ -502,6 +503,7 @@ define('./lex', ['./util', './token', './node'], function (exports) {
 
     function genList() {
         //consumePunctuator('[');
+        nextToken();
         var elements = [];
         while (currToken.type !== TOKEN.EOF) {
             if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Literal || currToken.type === TOKEN.BooleanLiteral) {
@@ -536,9 +538,6 @@ define('./lex', ['./util', './token', './node'], function (exports) {
                 } else if (currToken.value === ',') {
                     nextToken();
                     obj = new Node.consNode(obj, genExpressionNode());
-                } else if (currToken.value === '[') {
-                    nextToken();
-                    obj = genList();
                 } else {
                     return obj;
                 }
@@ -691,6 +690,8 @@ define('./lex', ['./util', './token', './node'], function (exports) {
                     return genParenNode();
                 } else if (currToken.value === '"' || currToken.value === '\'') {
                     return genLiteralNode();
+                } else if (currToken.value === '[') {
+                    return genList();
                 }
             } else if (currToken.type === TOKEN.Keyword && currToken.value === 'if') {
                 return genIfConditionNode();
@@ -812,37 +813,63 @@ define('./node', [],function (exports) {
 
     expressionNode.prototype.getValue = function (scope) {
         var left = this.left.getValue(scope);
-        var right = this.right.getValue(scope);
+        var right;
         if (this.operator === '*') {
             return left * right;
         } else if (this.operator === '/') {
+            right = this.right.getValue(scope);
             if (right === 0) {
                 throw "divided by zero";
             }
             return left / right;
         } else if (this.operator === '+') {
+            right = this.right.getValue(scope);
             return left + right;
         } else if (this.operator === '-') {
+            right = this.right.getValue(scope);
             return left - right;
         } else if (this.operator === '==') {
+            right = this.right.getValue(scope);
             return left === right;
         } else if (this.operator === '!=') {
+            right = this.right.getValue(scope);
             return left !== right;
         } else if (this.operator === '>') {
+            right = this.right.getValue(scope);
             return left > right;
         } else if (this.operator === '<') {
+            right = this.right.getValue(scope);
             return left < right;
         } else if (this.operator === '>=') {
+            right = this.right.getValue(scope);
             return left >= right;
         } else if (this.operator === '<=') {
+            right = this.right.getValue(scope);
             return left <= right;
         } else if (this.operator === '||') {
-            return left || right;
+            if (left === true) {
+                return true;
+            } else {
+                return this.right.getValue(scope);
+            }
         } else if (this.operator === '&&') {
-            return left && right;
+            if (left === false) {
+                return false;
+            } else {
+                return this.right.getValue(scope);
+            }
         } else if (this.operator === '++') {
+            right = this.right.getValue(scope);
             var newInstance = left.concat(right);
             return newInstance;
+        } else if (this.operator === ':') {
+            right = this.right.getValue(scope);
+            if (left.constructor === Array) {
+                return left.concat(right);
+            } else {
+                return [].concat(left, right);
+            }
+
         }
     };
 
