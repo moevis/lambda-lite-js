@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-27
+/*! PROJECT_NAME - v0.1.0 - 2015-10-28
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -848,6 +848,7 @@ define('./node', [],function (exports) {
         var left = this.left.getValue(scope);
         var right;
         if (this.operator === '*') {
+            right = this.right.getValue(scope);
             return left * right;
         } else if (this.operator === '/') {
             right = this.right.getValue(scope);
