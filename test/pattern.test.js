@@ -12,11 +12,11 @@ var test = PatternMatching([
     ['$', function (S) {
         return '$';
     }],
-    [[], function (x) {
+    [[[1]], function (x) {
         return 'any';
     }]
 ]);
 
 
 //console.log(test(1));
-console.log(test([]));
+console.log(test([[]]));
