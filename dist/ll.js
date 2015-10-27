@@ -121,11 +121,12 @@ if (typeof require === 'undefined') {
     var require = ll.require;
 }
 
-define('./lex', ['./util', './token', './node'], function (exports) {
+define('./lex', ['./util', './token', './node', './pattern'], function (exports) {
 
-    var Util  = require('./util').Util;
-    var Token = require('./token').Token;
-    var Node  = require('./node').Node;
+    var Util     = require('./util').Util;
+    var Token    = require('./token').Token;
+    var Node     = require('./node').Node;
+    var Pattern  = require('./pattern').Pattern;
 
     var TOKEN = {
         EOF: 1,
@@ -662,6 +663,36 @@ define('./lex', ['./util', './token', './node'], function (exports) {
         return node;
     }
 
+    function genPatternSwitchingNode () {
+        var params = [];
+        var pattern;
+        var id = genIdentifierNode();
+        consumePunctuator('@');
+        if (currToken.type === TOKEN.Keyword) {
+            if (currToken.value === 'Boolean') {
+                pattern = new Pattern.unit(Boolean);
+            } else if (currToken.value === 'Number') {
+                pattern = new Pattern.unit(Number);
+            } else if (currToken.value === 'String') {
+                pattern = new Pattern.unit(String);
+            }
+        } else if (currToken.type === TOKEN.Numberic) {
+            pattern = new Pattern.unit(currToken.value);
+        } else if (currToken.type === TOKEN.BooleanLiteral) {
+            pattern = new Pattern.unit(currToken.value);
+        } else if (currToken.type === TOKEN.Literal) {
+            pattern = new Pattern.unit(currToken.value);
+        } else if (currToken.type === TOKEN.Punctuator) {
+            pattern = new Pattern.any();
+        }
+        var condition = new Node.objectNode(id);
+        var thenStatement = new Node.objectNode();
+        var elseStatement = null;
+        var expre = genTopLevelNode();
+        var node = new Node.lambdaNode(id, expre);
+        params.push(node);
+    }
+
 
     function genTopLevelNode () {
         if (currToken.type === TOKEN.Punctuator && currToken.value === '\\') {
@@ -970,6 +1001,15 @@ define('./node', [],function (exports) {
 
     listNode.prototype.getValue = function (scope) {
         return this.ele;
+    };
+
+    function patternNode (id, pattern) {
+        this.id = id;
+        this.pattern = pattern;
+    }
+
+    patternNode.prototype.getValue = function (scope) {
+
     };
 
     exports.NODE           = NODE;
