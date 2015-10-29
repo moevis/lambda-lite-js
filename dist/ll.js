@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-28
+/*! PROJECT_NAME - v0.1.0 - 2015-10-29
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -631,25 +631,33 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
         var id = currToken.value;
         var node;
         var expre;
+
         if (match('=')) {
             expectPunctuator('=');
             expre = genTopLevelNode();
         } else {
             nextToken();
-            var params = [];
-            while (! match('=')) {
+            if (match('@')) {
+                expre = genPatternNode();
+                //node.id = id;
+                //return node;
+            } else {
+                var params = [];
+                while (! match('=')) {
+                    expre = genIdentifierNode();
+                    params.push(expre);
+                }
+                // at least read one params
                 expre = genIdentifierNode();
                 params.push(expre);
-            }
-            // at least read one params
-            expre = genIdentifierNode();
-            params.push(expre);
 
-            consumePunctuator('=');
-            expre = genTopLevelNode();
-            while (params.length > 0) {
-                expre = new Node.lambdaNode(params.pop().id, expre);
+                consumePunctuator('=');
+                expre = genTopLevelNode();
+                while (params.length > 0) {
+                    expre = new Node.lambdaNode(params.pop().id, expre);
+                }
             }
+
         }
         var value = expre;
         if (match('->')) {
@@ -661,12 +669,13 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
             node = new Node.defineNode(id, value, null);
         }
         return node;
+
     }
 
-    function genPatternSwitchingNode () {
+    function genPatternNode () {
         var params = [];
         var pattern;
-        var id = genIdentifierNode();
+        var id = genIdentifierNode().id;
         consumePunctuator('@');
         if (currToken.type === TOKEN.Keyword) {
             if (currToken.value === 'Boolean') {
@@ -677,20 +686,21 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
                 pattern = new Pattern.unit(String);
             }
         } else if (currToken.type === TOKEN.Numberic) {
-            pattern = new Pattern.unit(currToken.value);
+            pattern = new Pattern.unit(Number(currToken.value));
         } else if (currToken.type === TOKEN.BooleanLiteral) {
-            pattern = new Pattern.unit(currToken.value);
+            pattern = new Pattern.unit(currToken.value === 'true');
         } else if (currToken.type === TOKEN.Literal) {
             pattern = new Pattern.unit(currToken.value);
-        } else if (currToken.type === TOKEN.Punctuator) {
+        } else if (currToken.type === TOKEN.Punctuator && currToken.value === '*') {
             pattern = new Pattern.any();
         }
-        var condition = new Node.objectNode(id);
-        var thenStatement = new Node.objectNode();
-        var elseStatement = null;
+
+        expectPunctuator('=');
+
         var expre = genTopLevelNode();
-        var node = new Node.lambdaNode(id, expre);
+        var node = new Node.patternNode(id, pattern, expre);
         params.push(node);
+        return node;
     }
 
 
@@ -948,7 +958,15 @@ define('./node', [],function (exports) {
     }
 
     defineNode.prototype.getValue = function (scope) {
-        scope.add(this.id, this.expre);
+        if (this.expre.constructor === patternNode) {
+            if (scope.table[this.id] === undefined) {
+                scope.add(this.id, this.expre);
+            } else {
+                scope.lookup(this.id).next = this.expre;
+            }
+        } else {
+            scope.add(this.id, this.expre);
+        }
         if (this.body !== null) {
             return this.body.getValue(scope);
         } else {
@@ -1004,13 +1022,31 @@ define('./node', [],function (exports) {
         return this.ele;
     };
 
-    function patternNode (id, pattern) {
+    function patternNode (id, pattern, expre) {
         this.id = id;
         this.pattern = pattern;
+        this.next = null;
+        this.expre = expre;
     }
 
     patternNode.prototype.getValue = function (scope) {
-
+        var subScope = new scope.constructor(scope);
+        var id = this.id;
+        var expre = this.expre;
+        var pattern = this.pattern;
+        var next = this.next;
+        return function (p) {
+            subScope.add(id, p);
+            if (pattern.expect(p.getValue(subScope))) {
+                return expre.getValue(subScope);
+            } else {
+                if (next !== null) {
+                    return next.getValue(subScope)(p);
+                } else {
+                    return null;
+                }
+            }
+        };
     };
 
     exports.NODE           = NODE;
@@ -1028,7 +1064,7 @@ define('./node', [],function (exports) {
     exports.Node.ifConditionNode = ifConditionNode;
     exports.Node.consNode        = consNode;
     exports.Node.listNode        = listNode;
-
+    exports.Node.patternNode     = patternNode;
 });
 
 if (typeof define === 'undefined') {
@@ -1236,7 +1272,7 @@ define('./util', [], function (exports) {
 
     var hexDigit = '0123456789abcdefABCDEF';
 
-    var keywords = ['if', 'then', 'else', 'let'];
+    var keywords = ['if', 'then', 'else', 'let', 'Number', 'String', 'List', 'Boolean'];
     var typewords = ['Number', 'String', 'List', 'Boolean'];
 
     var punctuatorStart = '+-*/!=|&^~%<>';
