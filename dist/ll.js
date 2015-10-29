@@ -674,33 +674,42 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
 
     function genPatternNode () {
         var params = [];
-        var pattern;
-        var id = genIdentifierNode().id;
-        consumePunctuator('@');
-        if (currToken.type === TOKEN.Keyword) {
-            if (currToken.value === 'Boolean') {
-                pattern = new Pattern.unit(Boolean);
-            } else if (currToken.value === 'Number') {
-                pattern = new Pattern.unit(Number);
-            } else if (currToken.value === 'String') {
-                pattern = new Pattern.unit(String);
+        var patterns = [];
+        while (currToken.type !== TOKEN.Punctuator && currToken.value !== '=') {
+            var id = genIdentifierNode().id;
+            var pattern;
+            consumePunctuator('@');
+            if (currToken.type === TOKEN.Keyword) {
+                if (currToken.value === 'Boolean') {
+                    pattern = new Pattern.unit(Boolean);
+                } else if (currToken.value === 'Number') {
+                    pattern = new Pattern.unit(Number);
+                } else if (currToken.value === 'String') {
+                    pattern = new Pattern.unit(String);
+                }
+            } else if (currToken.type === TOKEN.Numberic) {
+                pattern = new Pattern.unit(Number(currToken.value));
+            } else if (currToken.type === TOKEN.BooleanLiteral) {
+                pattern = new Pattern.unit(currToken.value === 'true');
+            } else if (currToken.type === TOKEN.Literal) {
+                pattern = new Pattern.unit(currToken.value);
+            } else if (currToken.type === TOKEN.Punctuator && currToken.value === '*') {
+                pattern = new Pattern.any();
             }
-        } else if (currToken.type === TOKEN.Numberic) {
-            pattern = new Pattern.unit(Number(currToken.value));
-        } else if (currToken.type === TOKEN.BooleanLiteral) {
-            pattern = new Pattern.unit(currToken.value === 'true');
-        } else if (currToken.type === TOKEN.Literal) {
-            pattern = new Pattern.unit(currToken.value);
-        } else if (currToken.type === TOKEN.Punctuator && currToken.value === '*') {
-            pattern = new Pattern.any();
+            params.push(id);
+            patterns.push(pattern);
+            nextToken();
         }
-
-        expectPunctuator('=');
+        consumePunctuator('=');
 
         var expre = genTopLevelNode();
-        var node = new Node.patternNode(id, pattern, expre);
-        params.push(node);
-        return node;
+        expre = new Node.patternNode(params.concat(), patterns, expre);
+
+        while (params.length > 0) {
+            expre = new Node.lambdaNode(params.pop(), expre);
+        }
+
+        return expre;
     }
 
 
@@ -958,15 +967,24 @@ define('./node', [],function (exports) {
     }
 
     defineNode.prototype.getValue = function (scope) {
-        if (this.expre.constructor === patternNode) {
-            if (scope.table[this.id] === undefined) {
-                scope.add(this.id, this.expre);
-            } else {
-                scope.lookup(this.id).next = this.expre;
-            }
-        } else {
+        if (scope.table[this.id] === undefined) {
             scope.add(this.id, this.expre);
+        } else {
+            var tmp = scope.table[this.id];
+
+            while (tmp.constructor === lambdaNode) {
+                tmp = tmp.expre;
+            }
+            if (tmp.constructor === patternNode) {
+                if (scope.table[this.id] === undefined) {
+                    scope.add(this.id, this.expre);
+                } else {
+                    tmp.next = this.expre.expre;
+                }
+            }
         }
+
+
         if (this.body !== null) {
             return this.body.getValue(scope);
         } else {
@@ -1022,31 +1040,27 @@ define('./node', [],function (exports) {
         return this.ele;
     };
 
-    function patternNode (id, pattern, expre) {
-        this.id = id;
-        this.pattern = pattern;
+    function patternNode (ids, patterns, expre) {
+        this.ids = ids;
+        this.patterns = patterns;
         this.next = null;
         this.expre = expre;
     }
 
     patternNode.prototype.getValue = function (scope) {
-        var subScope = new scope.constructor(scope);
-        var id = this.id;
-        var expre = this.expre;
-        var pattern = this.pattern;
-        var next = this.next;
-        return function (p) {
-            subScope.add(id, p);
-            if (pattern.expect(p.getValue(subScope))) {
-                return expre.getValue(subScope);
+        var ids = this.ids;
+        var inPattern = this.patterns.every(function(pattern, index) {
+            return pattern.expect(scope.lookup(ids[index]).getValue(scope));
+        });
+        if (inPattern) {
+            return this.expre.getValue(scope);
+        } else {
+            if (this.next === null) {
+                return null;
             } else {
-                if (next !== null) {
-                    return next.getValue(subScope)(p);
-                } else {
-                    return null;
-                }
+                return this.next.getValue(scope);
             }
-        };
+        }
     };
 
     exports.NODE           = NODE;
