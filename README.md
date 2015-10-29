@@ -3,10 +3,11 @@ a tiny FUNCITONAL LANGUAGE implemented by javascript.
 
 ## Support
 
-* lambda function (sugar for multi-parameters)
+* Lambda function (sugar for multi-parameters)
 * currying, lazy evaluation, recursive in anonymous function (z combinator)
-* point-free style: compose function together with `.`
-* basic type system: bool, number, list, function and string.
+* Basic pattern matching
+* Point-free style: compose function together with `.`
+* Basic type system: bool, number, list, function and string.
 
 ## Tutorial
 
@@ -31,6 +32,18 @@ Now, declear a function with single-param or multi-params can be write as below:
 ```haskell
 let add x y = x + y
 let result = add 1 2
+```
+
+### Pattern matching
+
+Pattern matching is not completed now. Currently support one parameter matching.
+
+Sample code is belows, it outputs 4;
+
+```haskell
+let func a@1 = a + 1;
+let func a@2 = a + 2;
+print (func 2);
 ```
 
 ### Various declaration
