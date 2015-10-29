@@ -979,6 +979,9 @@ define('./node', [],function (exports) {
                 if (scope.table[this.id] === undefined) {
                     scope.add(this.id, this.expre);
                 } else {
+                    while (tmp.next !== null) {
+                        tmp = tmp.next;
+                    }
                     tmp.next = this.expre.expre;
                 }
             }

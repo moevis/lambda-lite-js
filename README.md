@@ -36,15 +36,26 @@ let result = add 1 2
 
 ### Pattern matching
 
-Pattern matching is not completed now. Currently support one parameter matching.
-
-Sample code is belows, it outputs 4;
+Pattern matching is an useful feature in some functional language. The ll language has a basic pattern matching implements.
 
 ```haskell
 let func a@1 = a + 1;
 let func a@2 = a + 2;
 print (func 2);
+
+let echo a@Number = print 'Number';
+let echo a@String = print 'String';
+let echo a@*      = print 'Other';
+echo 'this is string';
+echo true;
 ```
+
+Pattern matching has some limits in ll.js .
+
+* The all parameters should be in the same order.
+* The lengths of the functions which have same name also should be equal.
+* Every parameter should have a pattern declearation like `Number`, `String`, `Boolean`, or `*` for other types.
+* Matching progress is from top to bottom, from left to right.
 
 ### Various declaration
 
