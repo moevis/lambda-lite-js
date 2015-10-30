@@ -30,11 +30,6 @@
                 <li>数字，字符串，布尔型计算，以及 +-*/ 中缀操作符的支持</li>
                 <li>if ... else ... 判断分支</li>
             </ul></p>
-<!--<pre><code class="haskell">-&#45;&#45; 示例：阶乘 -&#45;&#45;-->
-<!--let fact = \n ->-->
-    <!--if n == 1 then 1 else n * (fact n - 1);-->
-<!--print (fact 5);-->
-<!--</code></pre>-->
 
 <textarea id="source">let fact = \n ->
     if n == 1 then 1 else n * (fact n - 1);
@@ -92,8 +87,6 @@ print $ double $ square 10; --- output: 200 ---
 let func = double . square;
 print $ func 10;            --- output: 200 ---
 </code></pre>
-            
-        </div>
 
         <br />
         <b>Pattern matching | 模式匹配</b>
@@ -120,7 +113,7 @@ let fact n@Number = n * (fact n - 1);
 print $ fact 5;
 </code></pre>
         <br />
-
+        </div>
 
         <footer>
           Project maintained by <a href="https://github.com/icymorn">icymorn</a>
