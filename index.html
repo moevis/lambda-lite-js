@@ -24,6 +24,8 @@
             <p>ll.js 是一个由 javascript 实现的函数式语言，任何开启 javascript 支持的浏览器都可以运行它。函数式编程可以用另一种优雅的方式，（通常）用更少的代码获得同样的结果，由于函数式的直观和简短，通常我们的代码出错的概率会更少。目前 ll 语言其支持以下特性：</p>
             <p><ul>
                 <li>lambda 函数定义</li>
+                <li>函数柯里化, lazy-evaluation, 匿名递归（利用 z-combinator）</li>
+                <li>模式匹配</li>
                 <li>Point-free 风格编程</li>
                 <li>数字，字符串，布尔型计算，以及 +-*/ 中缀操作符的支持</li>
                 <li>if ... else ... 判断分支</li>
@@ -92,7 +94,34 @@ print $ func 10;            --- output: 200 ---
 </code></pre>
             
         </div>
+
         <br />
+        <b>Pattern matching | 模式匹配</b>
+        <p>对同一个函数使用不同的参数, 可以自动匹配出不同的处理,可以使用类型来匹配（Boolean, List, Number, String）,也可以使用具体的值.</p>
+<pre><code class="haskell">--- 类型匹配 ---
+let echo a@Number = print 'Number';
+let echo a@String = print 'String';
+
+echo 'this is string';
+</code></pre>
+        <p>可以将值匹配和类型匹配混合用</p>
+<pre><code class="haskell">--- 值匹配 ---
+let echo a@1 = print 'Number 1';
+let echo a@Number = print 'Other number';
+let echo a@* = print 'Other type';
+
+echo 1;
+</code></pre>
+
+        <p>使用模式匹配需要注意的是, 同名函数的参数长度必须相同, 每个参数的描述都要用 @ 隔开并且有描述符. 同名函数的参数顺序和名字要一样.</p>
+<pre><code class="haskell">--- 模式匹配在阶乘中 ---
+let fact n@1 = 1;
+let fact n@Number = n * (fact n - 1);
+print $ fact 5;
+</code></pre>
+        <br />
+
+
         <footer>
           Project maintained by <a href="https://github.com/icymorn">icymorn</a>
         </footer>
