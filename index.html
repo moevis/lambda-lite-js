@@ -63,8 +63,16 @@ let p = "hello world";
 </code></pre>
             <p>通过语法糖，声明一个多参数的函数更加简单快捷了。</p>
 <pre><code class="haskell">---多参数函数 ---
-let add x y = x + y
-let result = add 1 2
+let add x y = x + y;
+let result = add 1 2;
+</code></pre>
+
+利用 let 柯里化一个函数：
+
+<pre><code class="haskell">---柯里化 ---
+let add x y = x + y;
+let add3 = add 3;
+print (add3 5);
 </code></pre>
             <br />
             <b>Native function | 原生函数</b>
@@ -74,6 +82,9 @@ print "hello world";
 print 1 > 2;
 print 3 == 3;
 print 4 + 6 * 5;
+print (length [1,2,3,4]);
+print (reverse [1,2,3,4]);
+print ([1,2,3] !! 1);
 </code></pre>
             
             <br />
@@ -83,9 +94,9 @@ print 4 + 6 * 5;
 <pre><code class="haskell">--- 计算 (10 + 10) ^ 2 ---
 let double = \n -> n + n;
 let square = \n -> n * n;
-print $ double $ square 10; --- output: 200 ---
+print $ double $ square 10;
 let func = double . square;
-print $ func 10;            --- output: 200 ---
+print $ func 10;
 </code></pre>
 
         <br />
@@ -113,6 +124,7 @@ let fact n@Number = n * (fact n - 1);
 print $ fact 5;
 </code></pre>
         <br />
+
         </div>
 
         <footer>
