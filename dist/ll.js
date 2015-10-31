@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-29
+/*! PROJECT_NAME - v0.1.0 - 2015-10-31
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -660,12 +660,12 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
 
         }
         var value = expre;
-        if (match('->')) {
+        if (currToken.type == TOKEN.Punctuator && currToken.value == '->') {
             nextToken();
             var body = genTopLevelNode();
             node = new Node.defineNode(id, value, body);
         } else {
-            nextToken();
+            //nextToken();
             node = new Node.defineNode(id, value, null);
         }
         return node;
