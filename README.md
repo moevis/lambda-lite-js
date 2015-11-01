@@ -3,7 +3,7 @@ a tiny FUNCITONAL LANGUAGE implemented by javascript.
 
 ## Support
 
-* Lambda function (sugar for multi-parameters)
+* Lambda function (including sugar for declearing multi-parameters function)
 * currying, lazy evaluation, recursive in anonymous function (z combinator)
 * Basic pattern matching
 * Point-free style: compose function together with `.`
@@ -59,11 +59,12 @@ Pattern matching has some limits in ll.js .
 
 ### Various declaration
 
-The keyword `let` leads an assignment.
+The keyword `let` leads an assignment, in forms of `let ... = ... (-> ...)`. The symbol `->` is options, only if you want return a value.
 
 ```haskell
 let x = 5;
 let y = \n -> n + 1;
+let z = let a = 3 -> a * a;
 ```
 
 ### Binary condition
