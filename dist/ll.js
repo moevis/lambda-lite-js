@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-10-31
+/*! PROJECT_NAME - v0.1.0 - 2015-11-03
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -170,11 +170,12 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
     };
 
     var source;
+    var segment;
     var length;
-    var state = [];
     var index;
     var currToken = null;
     var lookahead = null;
+    var currentIndex = 0;
 
     function getPrecedence (ch) {
         var prece = binaryPrecedence[ch];
@@ -397,6 +398,7 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
 
     function nextToken() {
         var token;
+        currentIndex = index;
         currToken = lookahead;
         while (index < length) {
             var ch = source.charAt(index);
@@ -520,28 +522,40 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
                 expectPunctuator(',');
             }
         }
-        return new Node.listNode(elements);
+        return new Node.listNode(elements, new Node.SourceCode(source, segment, currentIndex));
     }
 
     function genCallNode () {
         var obj = genExpressionNode();
         while (true) {
             if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Identifier || currToken.type === TOKEN.Literal || currToken.type === TOKEN.BooleanLiteral) {
-                obj = new Node.callNode(obj, genExpressionNode());
+                obj = new Node.callNode(obj, genExpressionNode(), new Node.SourceCode(source, segment, currentIndex));
             } else if (currToken.type === TOKEN.Punctuator) {
                 if (currToken.value === '(') {
-                    obj = new Node.callNode(obj, genParenNode());
+                    obj = new Node.callNode(obj, genParenNode(), new Node.SourceCode(source, segment, currentIndex));
                 } else if (currToken.value === '$') {
                     nextToken();
-                    obj = new Node.callNode(obj, genCallNode());
+                    obj = new Node.callNode(obj, genCallNode(), new Node.SourceCode(source, segment, currentIndex));
                 } else if (currToken.value === '.') {
                     nextToken();
                     var f = obj;
                     var g = genCallNode();
-                    obj = new Node.lambdaNode('$1', new Node.callNode(f, new Node.callNode(g, new Node.objectNode('$1'))));
+                    obj = new Node.lambdaNode(
+                        '$1',
+                        new Node.callNode(
+                            f,
+                            new Node.callNode(
+                                g,
+                                new Node.objectNode(
+                                    '$1',
+                                    new Node.SourceCode(source, segment, currentIndex)
+                                ),
+                                new Node.SourceCode(source, segment, currentIndex)
+                            )
+                        ), new Node.SourceCode(source, segment, currentIndex));
                 } else if (currToken.value === ',') {
                     nextToken();
-                    obj = new Node.consNode(obj, genExpressionNode());
+                    obj = new Node.consNode(obj, genExpressionNode(), new Node.SourceCode(source, segment, currentIndex));
                 } else {
                     return obj;
                 }
@@ -585,19 +599,19 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
     }
 
     function genNumbericNode () {
-        var node = new Node.numberNode(Number(currToken.value));
+        var node = new Node.numberNode(Number(currToken.value), new Node.SourceCode(source, segment, currentIndex));
         nextToken();
         return node;
     }
 
     function genBooleanNode () {
-        var node = new Node.booleanNode(currToken.value === 'true');
+        var node = new Node.booleanNode(currToken.value === 'true', new Node.SourceCode(source, segment, currentIndex));
         nextToken();
         return node;
     }
 
     function genLiteralNode () {
-        var node = new Node.literalNode(currToken.value);
+        var node = new Node.literalNode(currToken.value, new Node.SourceCode(source, segment, currentIndex));
         nextToken();
         return node;
     }
@@ -607,7 +621,7 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
         var id = currToken.value;
         expectPunctuator('->');
         var expre = genTopLevelNode();
-        return new Node.lambdaNode(id, expre);
+        return new Node.lambdaNode(id, expre, new Node.SourceCode(source, segment, currentIndex));
     }
 
     function genIdentifierNode () {
@@ -623,7 +637,7 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
         var expre1 = genTopLevelNode();
         consumeKeyword('else');
         var expre2 = genTopLevelNode();
-        return new Node.ifConditionNode(cond, expre1, expre2);
+        return new Node.ifConditionNode(cond, expre1, expre2, new Node.SourceCode(source, segment, currentIndex));
     }
 
     function genDefineNode () {
@@ -654,7 +668,7 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
                 consumePunctuator('=');
                 expre = genTopLevelNode();
                 while (params.length > 0) {
-                    expre = new Node.lambdaNode(params.pop().id, expre);
+                    expre = new Node.lambdaNode(params.pop().id, expre, new Node.SourceCode(source, segment, currentIndex));
                 }
             }
 
@@ -663,10 +677,10 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
         if (currToken.type == TOKEN.Punctuator && currToken.value == '->') {
             nextToken();
             var body = genTopLevelNode();
-            node = new Node.defineNode(id, value, body);
+            node = new Node.defineNode(id, value, body, new Node.SourceCode(source, segment, currentIndex));
         } else {
             //nextToken();
-            node = new Node.defineNode(id, value, null);
+            node = new Node.defineNode(id, value, null, new Node.SourceCode(source, segment, currentIndex));
         }
         return node;
 
@@ -703,10 +717,10 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
         consumePunctuator('=');
 
         var expre = genTopLevelNode();
-        expre = new Node.patternNode(params.concat(), patterns, expre);
+        expre = new Node.patternNode(params.concat(), patterns, expre, new Node.SourceCode(source, segment, currentIndex));
 
         while (params.length > 0) {
-            expre = new Node.lambdaNode(params.pop(), expre);
+            expre = new Node.lambdaNode(params.pop(), expre, new Node.SourceCode(source, segment, currentIndex));
         }
 
         return expre;
@@ -757,7 +771,15 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
 
     exports.parse = function (code) {
         source = code;
+        var tmp = code.split('\n');
+        segment = [0];
+        var base = 0;
+        for (var i = 0, len = tmp.length; i < len; ++i ) {
+            base += tmp[i].length + 1;
+            segment.push(base);
+        }
         length = source.length;
+        currentIndex = 0;
         index  = 0;
         lookahead = null;
     };
@@ -821,9 +843,10 @@ define('./node', [],function (exports) {
         return this.func(scope);
     };
 
-    function callNode (callee, arg) {
+    function callNode (callee, arg, source) {
         this.callee = callee;
         this.arg = arg;
+        this.source = source;
     }
 
     callNode.prototype.getValue = function (scope) {
@@ -857,10 +880,11 @@ define('./node', [],function (exports) {
         return this.value;
     };
 
-    function expressionNode (operator) {
+    function expressionNode (operator, source) {
         this.operator  = operator;
         this.left      = null;
         this.right     = null;
+        this.source    = source;
     }
 
     expressionNode.prototype.getValue = function (scope) {
@@ -926,12 +950,15 @@ define('./node', [],function (exports) {
         } else if (this.operator === '!!') {
             right = this.right.getValue(scope);
             return left[right];
+        } else {
+            throw "cannot find a property.";
         }
     };
 
-    function lambdaNode (id, expre) {
+    function lambdaNode (id, expre, source) {
         this.id = id;
         this.expre = expre;
+        this.source = source;
     }
 
     lambdaNode.prototype.getValue = function (scope) {
@@ -944,15 +971,16 @@ define('./node', [],function (exports) {
         };
     };
 
-    function booleanNode (bool) {
+    function booleanNode (bool, source) {
         this.bool = bool;
+        this.source = source;
     }
 
     booleanNode.prototype.getValue = function (scope) {
         return this.bool;
     };
 
-    function literalNode (literal) {
+    function literalNode (literal, source) {
         this.literal = literal;
     }
 
@@ -960,10 +988,11 @@ define('./node', [],function (exports) {
         return this.literal;
     };
 
-    function defineNode (id, expre, body) {
+    function defineNode (id, expre, body, source) {
         this.id = id;
         this.expre = expre;
         this.body = body;
+        this.source = source;
     }
 
     defineNode.prototype.getValue = function (scope) {
@@ -995,10 +1024,11 @@ define('./node', [],function (exports) {
         }
     };
 
-    function ifConditionNode (cond, expre1, expre2) {
+    function ifConditionNode (cond, expre1, expre2, source) {
         this.cond = cond;
         this.expre1 = expre1;
         this.expre2 = expre2;
+        this.souce = source;
     }
 
     ifConditionNode.prototype.getValue = function (scope) {
@@ -1021,9 +1051,10 @@ define('./node', [],function (exports) {
         }
     }
 
-    function consNode (expre1, expre2) {
+    function consNode (expre1, expre2, source) {
         this.expre1 = expre1;
         this.expre2 = expre2;
+        this.source = source;
     }
 
     consNode.prototype.getValue = function (scope) {
@@ -1035,19 +1066,21 @@ define('./node', [],function (exports) {
         }
     };
 
-    function listNode (elements) {
+    function listNode (elements, source) {
         this.ele = elements;
+        this.source = source;
     }
 
     listNode.prototype.getValue = function (scope) {
         return this.ele;
     };
 
-    function patternNode (ids, patterns, expre) {
+    function patternNode (ids, patterns, expre, source) {
         this.ids = ids;
         this.patterns = patterns;
         this.next = null;
         this.expre = expre;
+        this.source = source;
     }
 
     patternNode.prototype.getValue = function (scope) {
@@ -1062,6 +1095,24 @@ define('./node', [],function (exports) {
                 return null;
             } else {
                 return this.next.getValue(scope);
+            }
+        }
+    };
+
+    function Exception (message) {
+        this.message = message;
+    }
+
+    function SourceCode (source, segment, index) {
+        this.source = source;
+        this.segment = segment;
+        this.index  = index;
+    }
+
+    SourceCode.prototype.getCodeSegment = function () {
+        for (var i = 0, length = this.segment.length; i < length; ++ i) {
+            if (this.segment[i] >= this.index) {
+                return this.source.slice(this.segment[i - 1], this.segment[i]);
             }
         }
     };
@@ -1082,6 +1133,9 @@ define('./node', [],function (exports) {
     exports.Node.consNode        = consNode;
     exports.Node.listNode        = listNode;
     exports.Node.patternNode     = patternNode;
+
+    exports.Node.Exception       = Exception;
+    exports.Node.SourceCode      = SourceCode;
 });
 
 if (typeof define === 'undefined') {
