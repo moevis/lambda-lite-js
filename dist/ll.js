@@ -1,4 +1,4 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-11-03
+/*! PROJECT_NAME - v0.1.0 - 2015-11-05
 * http://icymorn.github.io/lambda-lite-js/
 * Copyright (c) 2015 ICYMORN; Licensed MIT */
 var ll = {
@@ -590,7 +590,7 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
                         return null;
                     }
                 }
-                var node = new Node.expressionNode(currOp);
+                var node = new Node.expressionNode(currOp, new Node.SourceCode(source, segment, currentIndex));
                 node.left = left;
                 node.right = right;
                 left = node;
@@ -625,7 +625,7 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
     }
 
     function genIdentifierNode () {
-        var node = new Node.objectNode(currToken.value);
+        var node = new Node.objectNode(currToken.value, new Node.SourceCode(source, segment, currentIndex));
         nextToken();
         return node;
     }
@@ -850,24 +850,23 @@ define('./node', [],function (exports) {
     }
 
     callNode.prototype.getValue = function (scope) {
-        //var arg = scope.lookup(this.arg);
-        //if (this.arg.constructor === lambdaNode) {
-        //    return expre(this.arg);
-        //} else {
         var arg = this.arg.getValue(scope);
         var expre = this.callee.getValue(scope);
         return expre(packNode(arg));
         //}
     };
 
-    function objectNode (id) {
+    function objectNode (id, source) {
         this.id = id;
+        this.source = source;
     }
 
     objectNode.prototype.getValue = function (scope) {
         var various = scope.lookup(this.id);
         if (various === undefined) {
-            throw "Cannot to find: " + this.id;
+            console.log(this.source.index);
+            throw "Cannot to find: " + this.id + '\n' + 'at ' + this.source.getCodeSegment();
+
         }
         return various.getValue(scope);
     };
@@ -1112,7 +1111,11 @@ define('./node', [],function (exports) {
     SourceCode.prototype.getCodeSegment = function () {
         for (var i = 0, length = this.segment.length; i < length; ++ i) {
             if (this.segment[i] >= this.index) {
-                return this.source.slice(this.segment[i - 1], this.segment[i]);
+                var offset = this.index - this.segment[i - 1];
+                for (var off = '^'; off.length < offset; off = ' ' + off) {
+
+                }
+                return 'line ' + i + '\n' + this.source.slice(this.segment[i - 1], this.segment[i]) + '\n' + off;
             }
         }
     };

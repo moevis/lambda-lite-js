@@ -20,8 +20,7 @@ lex.parse(
     "then 1" +
     "else n * (getFact n - 1);" +
     "let fact = z makeFact;" +
-    "print $ fact 5;"
-    //"print (x 5);"
+    "print $ fact 5;"//"print (x 5);"
 );
 //lex.parse('let x = \\n->n+1 print 4');
 
