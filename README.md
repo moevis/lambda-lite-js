@@ -83,6 +83,7 @@ now some native functions are accessiable. As well as the basic calculation oper
 print "hello";
 print (length [1,2,3,4]);
 print (reverse [1,2,3,4]);
+print [1,2,3,4] !! 2;
 print (not true);
 ```
 
