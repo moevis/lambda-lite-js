@@ -1,6 +1,8 @@
 # Lambda-Lite-js
 a tiny FUNCITONAL LANGUAGE implemented by javascript.
 
+online demo: http://icymorn.github.io/lambda-lite-js/ （中文版）
+
 ## Support
 
 * Lambda function (including sugar for declearing multi-parameters function)
