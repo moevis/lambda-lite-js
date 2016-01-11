@@ -125,3 +125,20 @@ print $ double $ square 10;
 let func = double . square;
 print $ func 10;
 ```
+
+### Play with Church Number
+
+```haskell
+let True x y = x;
+let False x y = y;
+let Zero f x = x;
+let One f x = f x;
+let Two f x = f (f x);
+let Three f x = f (f (f x));
+let Add a b f x = a f (b f x);
+let Mul a b f x = a (b f) x;
+
+print $ Two (\n -> n + 1) 0;
+print $ Add One Two (\n -> n + 1) 0;
+print $ Mul Two Three (\n -> n + 1) 0;
+```
