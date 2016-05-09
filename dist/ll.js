@@ -1,6 +1,6 @@
-/*! PROJECT_NAME - v0.1.0 - 2015-11-05
+/*! PROJECT_NAME - v0.1.0 - 2016-05-09
 * http://icymorn.github.io/lambda-lite-js/
-* Copyright (c) 2015 ICYMORN; Licensed MIT */
+* Copyright (c) 2016 ICYMORN; Licensed MIT */
 var ll = {
     'exports': {},
     'require': function(module) {
@@ -512,7 +512,9 @@ define('./lex', ['./util', './token', './node', './pattern'], function (exports)
         nextToken();
         var elements = [];
         while (currToken.type !== TOKEN.EOF) {
-            if (currToken.type === TOKEN.Numberic || currToken.type === TOKEN.Literal || currToken.type === TOKEN.BooleanLiteral) {
+            if (currToken.type === TOKEN.Numberic){
+                elements.push(Number(currToken.value));
+            } else if (currToken.type === TOKEN.Literal || currToken.type === TOKEN.BooleanLiteral) {
                 elements.push(currToken.value);
             }
             if (match(']')) {
@@ -1309,9 +1311,19 @@ define('./scope', ['./node'], function (exports) {
     })));
 
 
+    root.add('map', new Node.lambdaNode('$1', new Node.lambdaNode('$2', new Node.nativeFunction(function(scope) {
+        var func = scope.lookup('$1').getValue(scope);
+        return scope.lookup('$2')
+            .getValue(scope)
+            .map(function(el) {
+                return func(new Node.numberNode(el));
+            });
+    }))));
+
     exports.Scope = Scope;
     exports.Root  = root;
-});
+}); 
+
 if (typeof define === 'undefined') {
     var define = function (ns, deps, func) {
         func(exports);
