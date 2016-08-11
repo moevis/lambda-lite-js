@@ -1,7 +1,7 @@
 # Lambda-Lite-js
 a tiny FUNCITONAL LANGUAGE implemented by javascript.
 
-online demo: http://icymorn.github.io/lambda-lite-js/ （中文版）
+online demo: http://moevis.github.io/lambda-lite-js/ （中文版）
 
 ## Support
 
